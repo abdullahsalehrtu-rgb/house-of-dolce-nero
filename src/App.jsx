@@ -275,7 +275,7 @@ export default function App() {
       }
     } catch (error) {
       console.error(error);
-      setOrderMessage("Something went wrong. Please try again.");
+      setOrderMessage(error.message || "Something went wrong.");
     }
 
     setIsSubmitting(false);
