@@ -270,7 +270,8 @@ export default function App() {
       if (stripeData.url) {
         window.location.href = stripeData.url;
       } else {
-        setOrderMessage("Stripe checkout failed. Please try again.");
+        console.log(stripeData);
+        setOrderMessage(stripeData.error || "Stripe checkout failed.");
       }
     } catch (error) {
       console.error(error);
