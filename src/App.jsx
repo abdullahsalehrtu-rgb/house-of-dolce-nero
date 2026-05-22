@@ -207,6 +207,7 @@ export default function App() {
 
   const deliveryFee = estimateDelivery(customerInfo.address);
   const deliveryAvailable = deliveryFee !== null;
+
   const finalTotal =
     basket.length > 0 && deliveryAvailable ? total + deliveryFee : total;
 
@@ -245,7 +246,7 @@ export default function App() {
           email: customerInfo.email,
           phone: customerInfo.phone,
           address: customerInfo.address,
-          notes: customerInfo.notes,
+          notes: customerInfo.notes || "None",
           order: orderItems,
           subtotal: `£${total.toFixed(2)}`,
           delivery: `£${deliveryFee.toFixed(2)}`,
@@ -270,11 +271,16 @@ export default function App() {
       if (stripeData.url) {
         window.location.href = stripeData.url;
       } else {
-        console.log(stripeData);
-        setOrderMessage(stripeData.error || "Stripe checkout failed.");
+        console.log("Stripe error:", stripeData);
+        setOrderMessage(
+          stripeData.error ||
+            stripeData.message ||
+            JSON.stringify(stripeData) ||
+            "Stripe checkout failed."
+        );
       }
     } catch (error) {
-      console.error(error);
+      console.error("Checkout error:", error);
       setOrderMessage(error.message || "Something went wrong.");
     }
 
@@ -411,7 +417,10 @@ export default function App() {
                     placeholder="Order notes / allergies / delivery instructions"
                     value={customerInfo.notes}
                     onChange={(e) =>
-                      setCustomerInfo({ ...customerInfo, notes: e.target.value })
+                      setCustomerInfo({
+                        ...customerInfo,
+                        notes: e.target.value,
+                      })
                     }
                   />
 
